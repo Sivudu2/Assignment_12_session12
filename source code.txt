@@ -1,0 +1,57 @@
+import numpy as np
+
+import pandas as pd
+
+from pandas import DataFrame, Series
+import sqlite3 as db
+
+url ='https://archive.ics.uci.edu/ml/machine-learning-databases/adult/adult.data'
+col_list =['age','workclass','fnlwgt','education','education-num','marital-status','occupation','relationship','race','sex','capaital-gain','capital-loss','hours-per-week','native-country','probability-for-label']
+adult= pd.read_csv(url,sep=",",delimiter=",",names=col_list,skipinitialspace=True)
+sqladb=adult.copy()
+
+print(sqladb.columns)
+import re
+sqladb.columns = [re.sub("[-]","_",col) for col in adult.columns]
+print(sqladb.columns)
+from pandasql import sqldf
+pysqldf = lambda q: sqldf(q, globals())
+
+***********************************************************
+pysqldf("SELECT *FROM sqladb LIMIT 10;")
+
+
+**********************************************************
+pysqldf("SELECT AVG(hours_per_week)
+
+FROM adult
+
+WHERE workclass =' Private' and sex=' Male';")
+
+
+OUTPUT: 42
+*********************************************************
+3)
+***********************************************************
+4) SELECT * FROM adult
+
+WHERE 
+marital_status=' Never-married' AND workclass =' Private' AND education=' masters'
+OUTPUT: 234 people
+*********************************************************************************************
+5)
+
+SELECT AVG(age) Average ,MIN(age) Minimum ,MAX(age) Maximum,workclass
+
+FROM adult GROUP BY workclass
+
+*****************************************************************************************
+
+6)
+
+SELECT  AVG(age) Average ,MIN(age) Minimum ,MAX(age) Maximum,native_country
+
+FROM adult GROUP BY native_country
+*******************************************************************************************
+7) SELECT * ,(capital_gain - capital_loss) 'Net-Capital-Gain' FROM adult
+***************************************************************************************************
